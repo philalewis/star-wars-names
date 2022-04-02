@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import Navbar from './Components/Navbar'
 
-function App() {
+const App = () => {
+  const [ data, setData ] = useState([])
+  const [ characters, setCharacters ] = useState([])
+
+  useEffect(() => {
+    fetch('https://swapi.dev/api/people/')
+      .then(res => res.json())
+      .then(data => {
+        setData(data.results)
+        setCharacters(data.results)
+      })
+      .catch(error => console.log(error))
+  }, [])
+
+  const showAllCharacters = () => {
+    return data.map(char => {
+      return (
+        <h2 key={char.id}>{char.name}</h2>
+      )
+    })
+  }
+
+  const showFilteredCharacters = () => {
+    return characters.map(char => {
+      return (
+        <h3 key={char.name}>{char.name}</h3>
+      )
+    })
+  }
+
+  const showAll = () => {
+    setCharacters(data)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <main>
+      <Navbar
+        // key={Date.now()}
+        data={data}
+        setCharacters={setCharacters}
+      />
+      <button onClick={showAll}>See All</button>
+      {/* {showAllCharacters()} */}
+      {showFilteredCharacters()}
+    </main>
+  )
 }
 
-export default App;
+export default App
